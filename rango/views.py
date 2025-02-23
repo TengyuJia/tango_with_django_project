@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rango.models import Category, Page
-from rango.forms import CategoryForm, PageForm
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from django.shortcuts import redirect
 from django.urls import reverse
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 def index(request):
     #return HttpResponse("Rango says hey there partner!<a href=\"http://127.0.0.1:8000/rango/about\">About</a>")
     category_list = Category.objects.order_by('-likes')[:5]
@@ -44,12 +46,12 @@ def add_category(request):
     
 def add_page(request, category_name_slug):
     try:
-        category = Category.objects.get(slug = category_name_slug)
+        category = Category.objects.get(slug=category_name_slug)
     except Category.DoesNotExist:
         category = None
+# You cannot add a page to a Category that does not exist...
     if category is None:
         return redirect('/rango/')
-        
     form = PageForm()
     if request.method == 'POST':
         form = PageForm(request.POST)
@@ -57,12 +59,68 @@ def add_page(request, category_name_slug):
             if category:
                 page = form.save(commit=False)
                 page.category = category
+                page.views = 0
                 page.save()
-            return redirect(reverse('rango:show_category',
-                                    kwargs={'category_name_slug':
-                                            category_name_slug}))
+                return redirect(reverse('rango:show_category',
+                                        kwargs={'category_name_slug':
+                                                category_name_slug}))
+            else:
+                print(form.errors)
+    context_dict = {'form': form, 'category': category}
+    return render(request, 'rango/add_page.html', context=context_dict)
+    
+def register(request):
+    registered = False
+    if request.method == 'POST':
+        user_form = UserForm(request.POST)
+        profile_form = UserProfileForm(request.POST)
+        if user_form.is_valid() and profile_form.is_valid():
+            user = user_form.save()
+            user.set_password(user.password)
+            user.save()
+             
+            profile =  profile_form.save(commit = False)
+            profile.user = user
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
+            profile.save()
+            registered = True
         else:
-            print(form.errors)
-    context_dict = {'form':form, 'category':category}
-    return render(request,'rango/add_page.html',context=context_dict)
+            print(user_form.errors, profile_form.errors)
+                 
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
+             
+    return render(request,
+                    'rango/register.html',
+                    context = {'user_form': user_form,
+                                'profile_form': profile_form,
+                                'registered': registered})
+def user_login(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        user = authenticate(username=username, password=password)
+        if user:
+            if user.is_active:
+                login(request, user)
+                return redirect(reverse('rango:index'))
+            else:
+                return HttpResponse("Your Rango account is disabled.")
+        else:
+            print(f"Invalid login details: {username}, {password}")
+            return HttpResponse("Invalid login details supplied.")
+    else:
+        return render(request, 'rango/login.html')
+
+@login_required
+def restricted(request):
+    return HttpResponse("Since you're logged in, you can see this text!")
+
+@login_required
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('rango:index'))
+
             
