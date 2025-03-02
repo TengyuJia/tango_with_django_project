@@ -4,6 +4,21 @@
 {% block title_block %}About Rango！{% endblock %}
 
 {% block body_block %}
+<div class="jumbotron p-4">
+	<div class="container">
+		<h1 class="jumbotron-heading">Grab</h1>
+	<div>
+			<h2 class="h2">
+			{% if user.is_authenticated %}
+				Howdy {{ user.username }}, Welcome to Grab!
+			{% else %}
+				Hey there partner! Register to leave your comments in Grab!
+			{% endif %}
+			</h2>
+		<strong>{{ boldmessage }}</strong>
+		</div>
+	</div>
+</div>
 		<div>
 			<a href="{% url 'rango:index' %}">Index</a><br />
 			<strong>This tutorial has been put together by Tengyu_Jia</strong>
