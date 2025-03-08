@@ -7,13 +7,14 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
+from rango.serp_search import run_query
  
 def index(request):
     #return HttpResponse("Rango says hey there partner!<a href=\"http://127.0.0.1:8000/rango/about\">About</a>")
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
     context_dict = {}
-    context_dict['boldmessage'] = 'Crunchy, creamy, cookie, candy, cupcake!'
+    context_dict['boldmessage'] = 'Help us to collect more restaurant in Grab!'
     context_dict['categories'] = category_list
     context_dict['pages'] = page_list
     visitor_cookie_handler(request)
@@ -24,12 +25,17 @@ def show_category(request, category_name_slug):
     context_dict = {}
     try:
         category = Category.objects.get(slug = category_name_slug)
-        pages = Page.objects.filter(category = category)
+        pages = Page.objects.filter(category = category).order_by('-views')
         context_dict['pages'] = pages
         context_dict['category'] = category
     except Category.DoesNotExist:
         context_dict['pages'] = None
         context_dict['category'] = None
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+        if query:
+            context_dict['result_list'] = run_query(query)
+            context_dict['query'] = query
     return render(request, 'rango/category.html', context = context_dict)
 
 def about(request):
@@ -76,6 +82,27 @@ def add_page(request, category_name_slug):
                 print(form.errors)
     context_dict = {'form': form, 'category': category}
     return render(request, 'rango/add_page.html', context=context_dict)
+#def search(request):
+#    result_list = []
+#    if request.method == 'POST':
+#        query = request.POST['query'].strip()
+#        if query:
+#            # Run our Bing function to get the results list!
+#            result_list = run_query(query)
+#    return render(request, 'rango/search.html', {'result_list': result_list})
+    
+def goto_url(request):
+    page_id = None
+    if request.method == 'GET':
+        page_id = request.GET.get('page_id')
+        try:
+            selected_page = Page.objects.get(id=page_id)
+        except Page.DoesNotExist:
+            return redirect(reverse('rango:index'))
+        selected_page.views = selected_page.views + 1
+        selected_page.save()
+        return redirect(selected_page.url)
+    return redirect(reverse('rango:index'))
 '''    
 def register(request):
     registered = False
