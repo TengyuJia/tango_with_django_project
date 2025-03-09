@@ -1,0 +1,81 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+{% block title_block %}
+	{% if page %}
+		{{ page.title }}
+	{% else %}
+		Unknown page
+	{% endif %}
+{% endblock %}
+	
+{% block body_block %}
+	<div class="jumbotron p-4">
+		<div class="container">
+			<h1 class="jumbotron-heading">Grab</h1>
+			<div>
+				<h2 class="h2">
+				{% if user.is_authenticated %}
+					Howdy {{ user.username }}, Welcome to Grab!
+				{% else %}
+					Hey there partner! Register to leave your comments in Grab!
+				{% endif %}
+				</h2></br>
+			<strong>{{ boldmessage }}</strong>
+			</div>
+		</div>
+	</div>
+	{% if page %}
+		<div class="card mb-4">
+			<div class="card-body">
+				<h1 class="card-title">{{ page.title }}</h1>
+				<p class="card-text"><strong>Location:</strong> {{ page.location }}</p>
+				<p class="card-text"><strong>Price per person:</strong> {{ page.price }}</p>
+				<p class="card-text"><strong>Official Website:</strong> <a href="{{ page.url }}">{{ page.url }}</a></p>
+				<p class="card-text"><strong>Views:</strong> {{ page.views }}</p>
+			</div>
+		</div>
+
+		<div class="card mb-4">
+			<div class="card-body">
+				<h2 class="card-title">Comments</h2>
+				{% if comments %}
+					<ul class="list-group">
+						{% for comment in comments %}
+							<li class="list-group-item">
+								<strong>{{ comment.user.username }}</strong> 
+								<small class="text-muted">({{ comment.created_at }})</small>
+								<p class="mt-2">{{ comment.content }}</p>
+							</li>
+						{% endfor %}
+					</ul>
+				{% else %}
+					<p class="text-muted">No comments yet.</p>
+				{% endif %}
+			</div>
+		</div>
+
+		{% if user.is_authenticated %}
+			<div class="card mb-4">
+				<div class="card-body">
+					<h2 class="card-title">Add a Comment</h2>
+					<form method="post" action="{% url 'rango:show_page' category_name_slug=category_name_slug page_name_slug=page.slug %}">
+						{% csrf_token %}
+						<div class="form-group">
+							{{ form.as_p }}
+						</div>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</form>
+				</div>
+			</div>
+		{% else %}
+			<div class="alert alert-info">
+				<p>Please <a href="{% url 'auth_login' %}" class="alert-link">login</a> to leave a comment.</p>
+			</div>
+		{% endif %}
+	{% else %}
+		<div class="alert alert-warning">
+			The specified restaurant does not exist!
+		</div>
+	{% endif %}
+{% endblock %}

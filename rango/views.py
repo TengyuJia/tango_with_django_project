@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rango.models import Category, Page
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm 
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -37,7 +37,44 @@ def show_category(request, category_name_slug):
             context_dict['result_list'] = run_query(query)
             context_dict['query'] = query
     return render(request, 'rango/category.html', context = context_dict)
+def show_page(request, category_name_slug, page_name_slug):
+    context_dict = {}
+    
+    try:
+        # 获取页面对象
+        page = Page.objects.get(slug=page_name_slug)
+        context_dict['page'] = page
+        context_dict['title'] = page.title
+        context_dict['price'] = page.price
+        context_dict['url'] = page.url
+        # 获取该页面的所有评论
+        comments = page.comments.all()
+        context_dict['comments'] = comments
+        
+        # 处理评论表单
+        if request.method == 'POST':
+            form = CommentForm(request.POST)
+            if form.is_valid():
+                comment = form.save(commit=False)
+                comment.page = page
+                comment.user = request.user  # 关联当前用户
+                comment.save()
+                return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
+        else:
+            form = CommentForm()
+        
+        context_dict['form'] = form
+        context_dict['category_name_slug'] = category_name_slug  # 确保传递 category_name_slug
 
+    except Page.DoesNotExist:
+        # 如果页面不存在，设置标题为 None
+        context_dict['title'] = None
+        context_dict['page'] = None
+        context_dict['comments'] = None
+        context_dict['form'] = None
+    
+    return render(request, 'rango/page.html', context=context_dict)
+    
 def about(request):
     #return HttpResponse("Rango says this is about the page!<a href = \"http://127.0.0.1:8000/rango\">Index</a>")
 
@@ -95,13 +132,18 @@ def goto_url(request):
     page_id = None
     if request.method == 'GET':
         page_id = request.GET.get('page_id')
-        try:
-            selected_page = Page.objects.get(id=page_id)
-        except Page.DoesNotExist:
-            return redirect(reverse('rango:index'))
-        selected_page.views = selected_page.views + 1
-        selected_page.save()
-        return redirect(selected_page.url)
+        if page_id:
+            try:            
+                selected_page = Page.objects.get(id = int(page_id))
+                selected_page.views = selected_page.views + 1
+                category_slug = selected_page.category.slug  # 假设 Page 有 category 外键
+                page_slug = selected_page.slug  # 假设 Page 有 slug 字段
+                selected_page.save()
+            except selected_page.DoesNotExist:
+                return redirect(reverse('rango:index'))
+            return redirect(reverse('rango:show_page', kwargs={
+                'category_name_slug': category_slug,
+                'page_name_slug': page_slug}))
     return redirect(reverse('rango:index'))
 '''    
 def register(request):
