@@ -16,15 +16,15 @@
 	<div>
 			<h2 class="h2">
 			{% if user.is_authenticated %}
-				Howdy {{ user.username }}, Welcome to Grab!
+				Hey {{ user.username }}, You are viewing {{ category.name }} Category!
 			{% else %}
 				Hey there partner! Register to leave your comments in Grab!
 			{% endif %}
 			</h2>
-		<strong>{{ boldmessage }}</strong>
 		</div>
 	</div>
 </div>
+<div class="container">
 	{% if category %}
 	<h1>{{ category.name }}</h1>
 	<div>
@@ -94,3 +94,4 @@
 	The specified category does not exist.
 	{% endif %}
 {% endblock %}
+</div>

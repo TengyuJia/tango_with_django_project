@@ -1,35 +1,101 @@
 {% extends 'rango/base.html' %}
 {% load staticfiles %}
 
-{% block title_block %}About Grab！{% endblock %}
+{% block title_block %}
+    About Grab
+{% endblock %}
 
 {% block body_block %}
+<!-- 页面标题 -->
 <div class="jumbotron p-4">
-	<div class="container">
-		<h1 class="jumbotron-heading">Grab</h1>
-	<div>
-			<h2 class="h2">
-			{% if user.is_authenticated %}
-				Howdy {{ user.username }}, Welcome to Grab!
-			{% else %}
-				Hey there partner! Register to leave your comments in Grab!
-			{% endif %}
-			</h2>
-		<strong>{{ boldmessage }}</strong>
-		</div>
-	</div>
+    <div class="container">
+        <h1 class="jumbotron-heading">About Grab</h1>
+        <p class="lead">Discover the features that make Grab the ultimate platform for food lovers!</p>
+    </div>
 </div>
-<div>
-	<a href="{% url 'rango:index' %}">Index</a><br />
-	<strong>This tutorial has been put together by Tengyu_Jia</strong>
-</div>
-<button class="btn btn-primary" onclick="alert('You clicked the button using inline JavaScript.');"> Click me- I run on vanilla JavaScript!</button></br>
-<button class="btn btn-primary" id="about-btn"> Click me- I run on Jquery!</button></br>
-<div id="msg">Hello! I'm a further example for JQuery testing.</div>
-<p>This is some text for the JQuery example.</p> 
-<div>
-	<img src = "{% static 'images/rango.jpg'%}" alt = 'picture of rango!'/>
-	<img src = "{{MEDIA_URL}}cat.jpg" alt = 'picture of a cat!'/>
+
+<!-- 功能介绍 -->
+<div class="container">
+    <div class="row">
+        <!-- 功能 1：餐厅搜索 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Restaurant Search</h5>
+                    <p class="card-text">
+                        Easily find your favorite restaurants by category, location, or name. 
+                        Explore detailed information, including menus, prices, and reviews.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 2：推荐菜 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Recommended Dishes</h5>
+                    <p class="card-text">
+                        Discover the most popular dishes at each restaurant. 
+                        See what other users recommend and share your own favorites!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 3：用户评论 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">User Reviews</h5>
+                    <p class="card-text">
+                        Read and write reviews for restaurants. 
+                        Share your dining experiences and help others make informed choices.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 功能 4：评分系统 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Rating System</h5>
+                    <p class="card-text">
+                        Rate restaurants based on your experience. 
+                        See average ratings and contribute to the community's knowledge.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 5：个性化推荐 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Hot Choice Recommendations</h5>
+                    <p class="card-text">
+                        Get restaurant recommendations based on their popularities.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 6：社交互动 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Social Interaction</h5>
+                    <p class="card-text">
+                        Connect with other food lovers. 
+                        Share your favorite restaurants and dishes, and discover new places together.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 {% endblock %}
