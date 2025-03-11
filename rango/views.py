@@ -15,14 +15,16 @@ def index(request):
     #return HttpResponse("Rango says hey there partner!<a href=\"http://127.0.0.1:8000/rango/about\">About</a>")
     category_list = Category.objects.order_by('-likes')[:5]
     page_list = Page.objects.order_by('-views')[:5]
+    all_pages = Page.objects.all() 
     context_dict = {}
-    context_dict['boldmessage'] = 'Help us to collect more restaurant in Grab!'
     context_dict['categories'] = category_list
     context_dict['pages'] = page_list
+    context_dict['all_pages'] = all_pages
     visitor_cookie_handler(request)
     context_dict['visits'] =  request.session['visits']
     response = render(request, 'rango/index.html', context=context_dict)
     return response
+
 def show_category(request, category_name_slug):
     context_dict = {}
     try:
