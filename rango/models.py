@@ -68,3 +68,12 @@ class UserLikePage(models.Model):
 
     class Meta:
         unique_together = ('user', 'page')  
+        
+class RecommendedDish(models.Model):
+    page = models.ForeignKey('Page', on_delete=models.CASCADE, related_name='recommended_dishes')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    dish_name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.dish_name

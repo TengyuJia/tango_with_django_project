@@ -16,7 +16,7 @@
         <div>
             <h2 class="h2">
                 {% if user.is_authenticated %}
-                    Howdy {{ user.username }}, Welcome to Grab!
+                    Hey {{ user.username }}, You are viewing a restaurant under {{ page.category }}!
                 {% else %}
                     Hey there partner! Register to leave your comments in Grab!
                 {% endif %}
@@ -60,7 +60,52 @@
                     </div>
                 </div>
             </div>
+			<div class="row">
+                <!-- Recommended Dishes 部分：占据 8 列 -->
+                <div class="col-md-8 d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
+                    <div class="card mb-4 h-100"> <!-- 设置高度为 100% -->
+                        <div class="card-body d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
+                            <h2 class="card-title">Top 3 Recommend Dishes:</h2>
+                            <div class="overflow-auto"> <!-- 设置固定高度并启用滚动 -->
+                                {% if recommended_dishes %}
+                                    <ul class="list-group">
+                                        {% for dish in recommended_dishes %}
+                                            <li class="list-group-item">
+                                                <strong>{{ dish.dish_name }}</strong>
+                                                <small class="text-muted">(Recommended {{ dish.count }} times)</small>
+                                            </li>
+                                        {% endfor %}
+                                    </ul>
+                                {% else %}
+                                    <p class="text-muted">No recommended dishes yet.</p>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
+                <!-- Add Recommended Dish 部分：占据 4 列 -->
+                <div class="col-md-4 d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
+                    {% if user.is_authenticated %}
+                        <div class="card mb-4 h-100"> <!-- 设置高度为 100% -->
+                            <div class="card-body d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
+                                <h2 class="card-title">Recommend A Dish!</h2></br>
+                                <form method="post" action="{% url 'rango:show_page' category_name_slug=category_name_slug page_name_slug=page.slug %}" class="flex-grow-1 d-flex flex-column"> <!-- 表单占满剩余空间 -->
+                                    {% csrf_token %}
+                                    <div class="form-group mb-0 flex-grow-1 d-flex flex-column"> <!-- 移除 form-group 的外边距 -->
+                                        {{ dish_form.as_p }}
+                                    </div>
+                                    <button type="submit" class="btn btn-primary mt-2">Submit</button> <!-- 添加 mt-2 类 -->
+                                </form>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="alert alert-info">
+                            <p>Please <a href="{% url 'auth_login' %}" class="alert-link">login</a> to recommend a dish.</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
             <!-- Add Comment 和 Comments 在一行 -->
             <div class="row">
                 <!-- Comments 部分：占据 8 列 -->
@@ -68,7 +113,7 @@
                     <div class="card mb-4 h-100"> <!-- 设置高度为 100% -->
                         <div class="card-body d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
                             <h2 class="card-title">Comments</h2>
-                            <div class="overflow-auto" style="height: 400px;"> <!-- 设置固定高度并启用滚动 -->
+                            <div class="overflow-auto" style="height: 300px;"> <!-- 设置固定高度并启用滚动 -->
                                 {% if comments %}
                                     <ul class="list-group">
                                         {% for comment in comments %}
@@ -90,13 +135,13 @@
                 <!-- Add Comment 部分：占据 4 列 -->
                 <div class="col-md-4 d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
                     {% if user.is_authenticated %}
-                        <div class="card mb-4 h-100"> <!-- 设置高度为 100% -->
+                        <div class="card mb-4 h-80"> <!-- 设置高度为 100% -->
                             <div class="card-body d-flex flex-column"> <!-- 使用 Flexbox 布局 -->
                                 <h2 class="card-title">Add a Comment</h2>
                                 <form method="post" action="{% url 'rango:show_page' category_name_slug=category_name_slug page_name_slug=page.slug %}" class="flex-grow-1 d-flex flex-column"> <!-- 表单占满剩余空间 -->
                                     {% csrf_token %}
                                     <div class="form-group mb-0 flex-grow-1 d-flex flex-column"> <!-- 移除 form-group 的外边距 -->
-                                        {{ form.as_p }}
+                                        {{ cmt_form.as_p }}
                                     </div>
                                     <button type="submit" class="btn btn-primary mt-2">Submit</button> <!-- 添加 mt-2 类 -->
                                 </form>

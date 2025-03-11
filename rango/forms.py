@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from rango.models import Page, Category, UserProfile,Comment
+from rango.models import Page, Category, UserProfile,Comment, RecommendedDish
 class CategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=Category.Name_Max_Length,
                             help_text = 'Please enter the category name.')
@@ -49,4 +49,9 @@ class UserProfileForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ['content']  # 只需要用户输入评论内容
+        fields = ['content']  
+
+class RecommendedDishForm(forms.ModelForm):
+    class Meta:
+        model = RecommendedDish
+        fields = ['dish_name']

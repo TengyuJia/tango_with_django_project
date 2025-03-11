@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rango.models import Category, Page, UserLike, UserLikePage
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm 
+from rango.models import Category, Page, UserLike, UserLikePage, RecommendedDish
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm, RecommendedDishForm 
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -10,7 +10,7 @@ from datetime import datetime
 from rango.serp_search import run_query
 from django.views import View
 from django.utils.decorators import method_decorator
- 
+from django.db import models 
 def index(request):
     #return HttpResponse("Rango says hey there partner!<a href=\"http://127.0.0.1:8000/rango/about\">About</a>")
     category_list = Category.objects.order_by('-likes')[:5]
@@ -62,20 +62,29 @@ def show_page(request, category_name_slug, page_name_slug):
             context_dict['user_liked_page'] = UserLikePage.objects.filter(user=request.user, page=page).exists()
         else:
             context_dict['user_liked_page'] = False
-            
-        # 处理评论表单
+        recommended_dishes = RecommendedDish.objects.filter(page=page).values('dish_name').annotate(count=models.Count('dish_name')).order_by('-count')[:3]    
+        context_dict['recommended_dishes'] = recommended_dishes
         if request.method == 'POST':
-            form = CommentForm(request.POST)
-            if form.is_valid():
-                comment = form.save(commit=False)
+            cmt_form = CommentForm(request.POST)
+            dish_form = RecommendedDishForm(request.POST)
+            if cmt_form.is_valid():
+                comment = cmt_form.save(commit=False)
                 comment.page = page
-                comment.user = request.user  # 关联当前用户
+                comment.user = request.user  
                 comment.save()
                 return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
+            if dish_form.is_valid():
+                recommended_dishes = dish_form.save(commit=False)
+                recommended_dishes.page = page
+                recommended_dishes.user = request.user  
+                recommended_dishes.save()
+                return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
         else:
-            form = CommentForm()
+            cmt_form = CommentForm()
+            dish_form = RecommendedDishForm()
         
-        context_dict['form'] = form
+        context_dict['cmt_form'] = cmt_form
+        context_dict['dish_form'] = dish_form
         context_dict['category_name_slug'] = category_name_slug  # 确保传递 category_name_slug
 
     except Page.DoesNotExist:
@@ -83,7 +92,8 @@ def show_page(request, category_name_slug, page_name_slug):
         context_dict['title'] = None
         context_dict['page'] = None
         context_dict['comments'] = None
-        context_dict['form'] = None
+        context_dict['cmt_form'] = None
+        context_dict['dish_form'] = None
     
     return render(request, 'rango/page.html', context=context_dict)
     
