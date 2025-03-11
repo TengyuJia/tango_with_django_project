@@ -24,15 +24,36 @@ class Page(models.Model):
     title = models.CharField(max_length=128)
     url = models.URLField(blank=True, null=True)
     views = models.IntegerField(default=0)
-    price = models.IntegerField(default=0)
+    price = models.FloatField(default=0)  
+    rating = models.FloatField(default=0)  
     location = models.CharField(max_length=128,blank=True, null=True)
     slug = models.SlugField(unique = True, blank=True, null=True)
     image = models.ImageField(upload_to="page_images/", blank=True, null=True)
     likes = models.IntegerField(default=0)
+    
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super(Page, self).save(*args, **kwargs)
+        
+    def update_average_price(self):
+        """
+        计算所有用户提交的价格的平均值，并更新当前页面的 price 字段。
+        """
+        prices = self.prices.all()  # 获取与该页面关联的所有 Price 对象
+        if prices.exists():
+            self.price = sum(price.price for price in prices) / prices.count()
+            self.save()
+
+    def update_average_rating(self):
+        """
+        计算所有用户评分的平均值，并更新当前页面的 rating 字段。
+        """
+        ratings = self.ratings.all()  # 获取与该页面关联的所有 Rating 对象
+        if ratings.exists():
+            self.rating = sum(rating.stars for rating in ratings) / ratings.count()
+            self.save()
+
     def __str__(self):
         return self.title
         
@@ -77,3 +98,27 @@ class RecommendedDish(models.Model):
 
     def __str__(self):
         return self.dish_name
+        
+class Price(models.Model):
+    """
+    存储用户提交的价格。
+    """
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='prices')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    price = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.price}"
+
+class Rating(models.Model):
+    """
+    存储用户提交的评分。
+    """
+    page = models.ForeignKey(Page, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    stars = models.FloatField(default=0)  # 0 到 5 的评分
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - {self.stars} stars"

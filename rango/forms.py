@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from rango.models import Page, Category, UserProfile,Comment, RecommendedDish
+from rango.models import Page, Category, UserProfile,Comment, RecommendedDish, Rating, Price
 class CategoryForm(forms.ModelForm):
     name = forms.CharField(max_length=Category.Name_Max_Length,
                             help_text = 'Please enter the category name.')
@@ -55,3 +55,16 @@ class RecommendedDishForm(forms.ModelForm):
     class Meta:
         model = RecommendedDish
         fields = ['dish_name']
+        
+class PriceForm(forms.ModelForm):
+    class Meta:
+        model = Price
+        fields = ['price']
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['stars']
+        widgets = {
+            'stars': forms.NumberInput(attrs={'min': 0, 'max': 5, 'step': 0.5}),
+        }

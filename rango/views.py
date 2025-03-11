@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rango.models import Category, Page, UserLike, UserLikePage, RecommendedDish
-from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm, RecommendedDishForm 
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm, RecommendedDishForm, PriceForm, RatingForm 
 from django.shortcuts import redirect
 from django.urls import reverse
 from django.contrib.auth import authenticate, login, logout
@@ -48,13 +48,8 @@ def show_page(request, category_name_slug, page_name_slug):
     context_dict = {}
     
     try:
-        # 获取页面对象
         page = Page.objects.get(slug=page_name_slug)
         context_dict['page'] = page
-        context_dict['title'] = page.title
-        context_dict['price'] = page.price
-        context_dict['url'] = page.url
-        # 获取该页面的所有评论
         comments = page.comments.all()
         context_dict['comments'] = comments
         
@@ -67,25 +62,49 @@ def show_page(request, category_name_slug, page_name_slug):
         if request.method == 'POST':
             cmt_form = CommentForm(request.POST)
             dish_form = RecommendedDishForm(request.POST)
+            price_form = PriceForm(request.POST)
+            rating_form = RatingForm(request.POST)
+            # update comment form
             if cmt_form.is_valid():
                 comment = cmt_form.save(commit=False)
                 comment.page = page
                 comment.user = request.user  
                 comment.save()
                 return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
+            # update dish form    
             if dish_form.is_valid():
                 recommended_dishes = dish_form.save(commit=False)
                 recommended_dishes.page = page
                 recommended_dishes.user = request.user  
                 recommended_dishes.save()
                 return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
+            # update price form
+            if price_form.is_valid():
+                price = price_form.save(commit=False)
+                price.page = page
+                price.user = request.user
+                price.save()
+                page.update_average_price()  # calculate average price
+                return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)            
+            # update rating form
+            if rating_form.is_valid():
+                rating = rating_form.save(commit=False)
+                rating.page = page
+                rating.user = request.user
+                rating.save()
+                page.update_average_rating()  # calculate average rating
+                return redirect('rango:show_page', category_name_slug=category_name_slug, page_name_slug=page_name_slug)
         else:
             cmt_form = CommentForm()
             dish_form = RecommendedDishForm()
+            price_form = PriceForm()
+            rating_form = RatingForm()
         
         context_dict['cmt_form'] = cmt_form
         context_dict['dish_form'] = dish_form
-        context_dict['category_name_slug'] = category_name_slug  # 确保传递 category_name_slug
+        context_dict['price_form'] = price_form
+        context_dict['rating_form'] = rating_form
+        context_dict['category_name_slug'] = category_name_slug  
 
     except Page.DoesNotExist:
         # 如果页面不存在，设置标题为 None
@@ -94,6 +113,8 @@ def show_page(request, category_name_slug, page_name_slug):
         context_dict['comments'] = None
         context_dict['cmt_form'] = None
         context_dict['dish_form'] = None
+        context_dict['price_form'] = None
+        context_dict['rating_form'] = None
     
     return render(request, 'rango/page.html', context=context_dict)
     
