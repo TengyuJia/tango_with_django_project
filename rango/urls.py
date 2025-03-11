@@ -21,4 +21,5 @@ urlpatterns = [
     path('restricted/', views.restricted, name='restricted'),
     #path('search/', views.search, name='search'),
     path('goto/', views.goto_url, name='goto'),
+    path('like_category/', views.LikeCategoryView.as_view(), name='like_category'),
 ]

@@ -21,6 +21,8 @@ class PageForm(forms.ModelForm):
     slug = forms.SlugField(widget = forms.HiddenInput(), required=False)                   
     views = forms.IntegerField(widget=forms.HiddenInput(), initial= 0)
     price = forms.IntegerField(initial= 0, help_text="Please enter the price per person of the restaurant.") 
+    image = forms.ImageField(required=False, help_text="Upload an image of the restaurant.")
+    likes = forms.IntegerField(widget=forms.HiddenInput(), initial = 0)
     class Meta:
         model = Page
         exclude = ('category',)

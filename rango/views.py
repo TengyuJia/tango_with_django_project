@@ -8,6 +8,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from datetime import datetime
 from rango.serp_search import run_query
+from django.views import View
+from django.utils.decorators import method_decorator
  
 def index(request):
     #return HttpResponse("Rango says hey there partner!<a href=\"http://127.0.0.1:8000/rango/about\">About</a>")
@@ -105,7 +107,7 @@ def add_page(request, category_name_slug):
         return redirect('/rango/')
     form = PageForm()
     if request.method == 'POST':
-        form = PageForm(request.POST)
+        form = PageForm(request.POST, request.FILES)
         if form.is_valid():
             if category:
                 page = form.save(commit=False)
@@ -117,6 +119,8 @@ def add_page(request, category_name_slug):
                                                 category_name_slug}))
             else:
                 print(form.errors)
+    else:
+        form = PageForm()
     context_dict = {'form': form, 'category': category}
     return render(request, 'rango/add_page.html', context=context_dict)
 #def search(request):
@@ -217,4 +221,18 @@ def visitor_cookie_handler(request):
     else:
         request.session['last_visit'] = last_visit_cookie
     request.session['visits'] = visits
-            
+
+class LikeCategoryView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        print("LikeCategoryView called!")  # 打印调试信息
+        category_id = request.GET.get('category_id')
+        print(f"category_id: {category_id}")  # 打印 category_id
+        try:
+            category = Category.objects.get(id=int(category_id))
+        except (Category.DoesNotExist, ValueError):
+            return HttpResponse(-1)
+        
+        category.likes += 1
+        category.save()
+        return HttpResponse(category.likes)      

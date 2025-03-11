@@ -1,0 +1,31 @@
+/* custom.css */
+/* 设置 Comments 和 Add Comment 的高度一致 */
+.comments-and-form-container {
+    display: flex;
+    align-items: stretch; /* 使子元素高度一致 */
+}
+
+.comments-container {
+    flex-grow: 1; /* 占满剩余空间 */
+    overflow-y: auto; /* 启用垂直滚动 */
+    border: 1px solid #ddd; /* 添加边框 */
+    border-radius: 4px; /* 圆角边框 */
+    padding: 10px; /* 内边距 */
+    background-color: #f9f9f9; /* 背景色 */
+}
+
+.add-comment-container {
+    flex-grow: 1; /* 占满剩余空间 */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 使表单内容在容器内均匀分布 */
+}
+
+/* 调整表单的样式 */
+.add-comment-form .form-group {
+    margin-bottom: 0; /* 移除 form-group 的外边距 */
+}
+
+.add-comment-form button {
+    margin-top: 10px; /* 调整按钮的上边距 */
+}

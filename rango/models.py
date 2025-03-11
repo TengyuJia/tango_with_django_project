@@ -22,11 +22,12 @@ class Category(models.Model):
 class Page(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=128)
-    url = models.URLField()
+    url = models.URLField(blank=True, null=True)
     views = models.IntegerField(default=0)
     price = models.IntegerField(default=0)
     location = models.CharField(max_length=128,blank=True, null=True)
     slug = models.SlugField(unique = True, blank=True, null=True)
+    image = models.ImageField(upload_to="page_images/", blank=True, null=True)
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
