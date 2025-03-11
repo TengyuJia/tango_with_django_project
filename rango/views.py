@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from rango.models import Category, Page
+from rango.models import Category, Page, UserLike, UserLikePage
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm,CommentForm 
 from django.shortcuts import redirect
 from django.urls import reverse
@@ -33,12 +33,17 @@ def show_category(request, category_name_slug):
     except Category.DoesNotExist:
         context_dict['pages'] = None
         context_dict['category'] = None
+    if request.user.is_authenticated:
+        context_dict['user_liked'] = UserLike.objects.filter(user=request.user, category=category).exists()
+    else:
+        context_dict['user_liked'] = False
     if request.method == 'POST':
         query = request.POST['query'].strip()
         if query:
             context_dict['result_list'] = run_query(query)
             context_dict['query'] = query
     return render(request, 'rango/category.html', context = context_dict)
+
 def show_page(request, category_name_slug, page_name_slug):
     context_dict = {}
     
@@ -53,6 +58,11 @@ def show_page(request, category_name_slug, page_name_slug):
         comments = page.comments.all()
         context_dict['comments'] = comments
         
+        if request.user.is_authenticated:
+            context_dict['user_liked_page'] = UserLikePage.objects.filter(user=request.user, page=page).exists()
+        else:
+            context_dict['user_liked_page'] = False
+            
         # 处理评论表单
         if request.method == 'POST':
             form = CommentForm(request.POST)
@@ -225,14 +235,37 @@ def visitor_cookie_handler(request):
 class LikeCategoryView(View):
     @method_decorator(login_required)
     def get(self, request):
-        print("LikeCategoryView called!")  # 打印调试信息
         category_id = request.GET.get('category_id')
-        print(f"category_id: {category_id}")  # 打印 category_id
         try:
             category = Category.objects.get(id=int(category_id))
         except (Category.DoesNotExist, ValueError):
-            return HttpResponse(-1)
-        
+            return HttpResponse(-1)  
+
+        if UserLike.objects.filter(user=request.user, category=category).exists():
+            return HttpResponse(-2)  
+
+        UserLike.objects.create(user=request.user, category=category)
+
         category.likes += 1
         category.save()
-        return HttpResponse(category.likes)      
+
+        return HttpResponse(category.likes)
+        
+class LikePageView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        page_id = request.GET.get('page_id')
+        try:
+            page = Page.objects.get(id=int(page_id))
+        except (Page.DoesNotExist, ValueError):
+            return HttpResponse(-1)  
+
+        if UserLikePage.objects.filter(user=request.user, page=page).exists():
+            return HttpResponse(-2)  
+
+        UserLikePage.objects.create(user=request.user, page=page)
+
+        page.likes += 1
+        page.save()
+
+        return HttpResponse(page.likes)

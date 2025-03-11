@@ -28,6 +28,7 @@ class Page(models.Model):
     location = models.CharField(max_length=128,blank=True, null=True)
     slug = models.SlugField(unique = True, blank=True, null=True)
     image = models.ImageField(upload_to="page_images/", blank=True, null=True)
+    likes = models.IntegerField(default=0)
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
@@ -50,4 +51,20 @@ class Comment(models.Model):
     created_at = models.DateTimeField(default=timezone.now)  
 
     def __str__(self):
-        return f"Comment by {self.user.username} on {self.page.title}"   
+        return f"Comment by {self.user.username} on {self.page.title}"  
+        
+class UserLike(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    category = models.ForeignKey(Category, on_delete=models.CASCADE) 
+    liked_at = models.DateTimeField(auto_now_add=True)  
+
+    class Meta:
+        unique_together = ('user', 'category')  
+        
+class UserLikePage(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)  
+    page = models.ForeignKey(Page, on_delete=models.CASCADE)  
+    liked_at = models.DateTimeField(auto_now_add=True)  
+
+    class Meta:
+        unique_together = ('user', 'page')  

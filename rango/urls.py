@@ -22,4 +22,5 @@ urlpatterns = [
     #path('search/', views.search, name='search'),
     path('goto/', views.goto_url, name='goto'),
     path('like_category/', views.LikeCategoryView.as_view(), name='like_category'),
+    path('like_page/', views.LikePageView.as_view(), name='like_page'),
 ]

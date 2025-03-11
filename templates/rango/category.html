@@ -30,13 +30,14 @@
 	<div>
 		<strong id="like_count">{{ category.likes }}</strong> likes
 		{% if user.is_authenticated %}
-		<button id="like_btn"
-		data-categoryid="{{ category.id }}"
-		class="btn btn-primary btn-sm"
-		type="button">
-		<span data-feather="thumbs-up"></span>
-		Like Category
-		</button>
+			{% if not user_liked %}
+				<button id="like_btn" data-categoryid="{{ category.id }}" class="btn btn-primary btn-sm" type="button">
+					<span data-feather="thumbs-up"></span>
+					Like Category
+				</button>
+			{% else %}
+				<p>You have already liked this category.</p>
+			{% endif %}
 		{% endif %}
 	 </div>
 	{% if pages %}

@@ -43,6 +43,19 @@
                             <p class="card-text"><strong>Price per person:</strong> {{ page.price }}</p>
                             <p class="card-text"><strong>Official Website:</strong> <a href="{{ page.url }}" target="_blank" class="text-primary">{{ page.url }}</a></p>
                             <p class="card-text"><strong>Views:</strong> {{ page.views }}</p>
+							<p class="card-text"><strong>Likes:</strong> {{ page.likes }}</p>
+							<div>
+								{% if user.is_authenticated %}
+									{% if not user_liked_page %}
+										<button id="like_page_btn" data-pageid="{{ page.id }}" class="btn btn-primary btn-sm" type="button">
+											<span data-feather="thumbs-up"></span>
+											Like Restaurant
+										</button>
+									{% else %}
+										<p>You have already liked this restaurant.</p>
+									{% endif %}
+								{% endif %}
+							</div>
                         </div>
                     </div>
                 </div>
