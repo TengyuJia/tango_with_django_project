@@ -1,0 +1,81 @@
+{% extends "registration/base_auth.html" %}
+
+{% block body_block %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card mt-5">
+            <div class="card-body">
+                <h2 class="card-title text-center">Register</h2>
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    <!-- 显示 Django messages 框架的错误信息 -->
+                    {% if messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- 显示表单的非字段错误 -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        {{ form.username }}
+                         {% if form.username.errors %}
+                               <div class="error">
+                                {% for error in form.username.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        {{ form.email }}
+                         {% if form.email.errors %}
+                               <div class="error">
+                                {% for error in form.email.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="password1">Password</label>
+                        {{ form.password1 }}
+                        <!-- 显示字段错误 -->
+                        {% if form.password1.errors %}
+                                <div class="error">
+                                {% for error in form.password1.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="password2">Confirm Password</label>
+                        {{ form.password2 }}
+                        <!-- 显示字段错误 -->
+                        {% if form.password2.errors %}
+                            <div class="error">
+                                {% for error in form.password2.errors %}
+                                    {{ error }}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Register</button>
+                <p class="text-center">have an account? <a href="{% url 'rango:login' %}">login</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

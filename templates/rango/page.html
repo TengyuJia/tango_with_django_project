@@ -1,5 +1,5 @@
 {% extends 'rango/base.html' %}
-{% load staticfiles %}
+{% load static %}
 
 {% block title_block %}
     {% if page %}
@@ -143,7 +143,7 @@
                 </div>
             {% else %}
                 <div class="alert alert-info">
-                    <p>Please <a href="{% url 'auth_login' %}" class="alert-link">login</a> to rate and make recommendations.</p>
+                    <p>Please <a href="{% url 'rango:login' %}" class="alert-link">login</a> to rate and make recommendations.</p>
                 </div>
             {% endif %}
         </div>
@@ -188,7 +188,7 @@
                     </div>
                 {% else %}
                     <div class="alert alert-info">
-                        <p>Please <a href="{% url 'auth_login' %}" class="alert-link">login</a> to leave a comment.</p>
+                        <p>Please <a href="{% url 'rango:login' %}" class="alert-link">login</a> to leave a comment.</p>
                     </div>
                 {% endif %}
             </div>

@@ -26,11 +26,10 @@ SECRET_KEY = '-f+oh49m0963&v22ru^3$ex#u40m&_lr!eb(mtx#7snj!*l0j4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -39,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rango',
-    'registration',
 ]
 
 MIDDLEWARE = [
@@ -65,7 +63,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'django.template.context_processors.media', 
+                'django.template.context_processors.media',
+                'rango.context_processors.categories',
             ],
         },
     },
@@ -135,3 +134,7 @@ LOGIN_URL = 'auth_login'
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [STATIC_DIR, ]
+STATIC_ROOT = os.path.join(BASE_DIR, "static_new/")
+
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

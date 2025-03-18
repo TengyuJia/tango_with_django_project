@@ -29,3 +29,80 @@
 .add-comment-form button {
     margin-top: 10px; /* 调整按钮的上边距 */
 }
+
+.sidebar {
+        padding: 20px;
+        background-color: #f8f9fa;
+    }
+
+    .sidebar .nav-link {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+    .sidebar .nav-link:hover {
+        background-color: #e9ecef;
+    }
+
+    .main-content {
+        padding: 20px;
+    }
+
+    .footer {
+        margin-top: 20px;
+        padding: 10px;
+        text-align: center;
+        background-color: #f8f9fa;
+    }
+    .error {
+        color: red;
+    }
+
+                  .jumbotron {
+    background-color: #f8f9fa;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+}
+                  .card {
+    border-radius: 0.5rem;
+}
+    .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    background-color: #f8f9fa;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+
+.sidebar {
+
+    padding: 20px 0;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-sticky {
+    height: calc(100vh - 48px);
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+.sidebar .nav-item:hover a{
+    color: turquoise;
+}
+.nav-link {
+    color: #495057;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.nav-link:hover {
+    color: #007bff;
+}
+
+.nav-link i {
+    margin-right: 5px;
+}

@@ -1,130 +1,129 @@
 {% extends 'rango/base.html' %}
-{% load staticfiles %}
+{% load static %}
+{% block css %}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet">
 
+{% endblock %}
 {% block title_block %}
     Homepage
 {% endblock %}
 
 {% block body_block %}
-<div class="jumbotron p-4">
-    <div class="container">
-        <h1 class="jumbotron-heading">Grab</h1>
-        <div>
-            <h2 class="h2">
+    <div class="jumbotron jumbotron-fluid p-4">
+        <div class="container">
+            <h1 class="display-4">Grab</h1>
+            <p class="lead">
                 {% if user.is_authenticated %}
                     Howdy {{ user.username }}, Welcome to Grab!
                 {% else %}
                     Hey there partner! Register to leave your comments in Grab!
                 {% endif %}
-            </h2>
+            </p>
         </div>
     </div>
-</div>
 
-<p>Visits of Grab: {{ visits }}</p>
-<div class="container">
-    <!-- Most Liked Categories 和 Most Viewed Restaurants -->
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2>Most Liked Categories</h2>
-                    <div class="scrollable-list" style="height: 300px; overflow-y: auto;"> <!-- 固定高度并添加滚动条 -->
-                        {% if categories %}
-                            <ul class="list-group">
-                                {% for category in categories %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'rango:show_category' category.slug %}">{{ category.name }}</a>
-                                        {% if category.likes > 1 %}
-                                            ({{ category.likes }} likes)
-                                        {% elif category.likes == 1 %}
-                                            ({{ category.likes }} like)
-                                        {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <strong>There are no categories present.</strong>
-                        {% endif %}
+    <div class="container">
+        <!-- Visits Counter -->
+        <p class="text-center">Visits of Grab: {{ visits }}</p>
+
+        <!-- Most Liked Categories and Most Viewed Restaurants -->
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title">Most Liked Categories</h2>
+                        <div class="scrollable-list" style="height: 300px; overflow-y: auto;">
+                            {% if categories_ %}
+                                <ul class="list-group list-group-flush">
+                                    {% for category in categories_ %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <a href="{% url 'rango:show_category' category.slug %}"
+                                               class="text-decoration-none">
+                                                <strong>{{ category.name }}</strong>
+                                            </a>
+                                            <span class="badge badge-primary badge-pill">{{ category.likes }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <p class="text-center text-muted"><strong>There are no categories present.</strong></p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title">Most Viewed Restaurants</h2>
+                        <div class="scrollable-list" style="height: 300px; overflow-y: auto;">
+                            {% if pages %}
+                                <ul class="list-group list-group-flush">
+                                    {% for page in pages %}
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <a href="{% url 'rango:goto' %}?page_id={{ page.id }}" class="text-decoration-none"><strong>{{ page.title }}</strong></a>
+                                            <span class="badge badge-primary badge-pill">{{ page.views }}</span>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                <strong>There are no pages present.</strong>
+                            {% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
-            <div class="card mb-4">
-                <div class="card-body">
-                    <h2>Most Viewed Restaurants</h2>
-                    <div class="scrollable-list" style="height: 300px; overflow-y: auto;"> <!-- 固定高度并添加滚动条 -->
-                        {% if pages %}
-                            <ul class="list-group">
-                                {% for page in pages %}
-                                    <li class="list-group-item">
-                                        <a href="{% url 'rango:goto' %}?page_id={{ page.id }}">{{ page.title }}</a>
-                                        {% if page.views > 1 %}
-                                            ({{ page.views }} views)
-                                        {% elif page.views == 1 %}
-                                            ({{ page.views }} view)
-                                        {% endif %}
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            <strong>There are no pages present.</strong>
-                        {% endif %}
+
+        <!-- All Restaurants -->
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <div class="card mb-4 shadow-lg">
+                    <div class="card-body">
+                        <h2 class="card-title">All Restaurants</h2>
+                        <div class="scrollable-list" style="height: 300px; overflow-y: auto;">
+                            <div class="row">
+                                {% if all_pages %}
+                                    {% for page in all_pages %}
+                                        <div class="col-md-6 mb-3">
+                                            <div class="card shadow-sm">
+                                                <div class="row no-gutters">
+                                                    <div class="col-md-4">
+                                                        {% if page.image %}
+                                                            <img src="{{ page.image.url }}" alt="{{ page.title }}"
+                                                                 class="card-img">
+                                                        {% else %}
+                                                            <div class="card-img bg-light text-center py-5 h-100">
+                                                                <p class="text-muted">No image available</p>
+                                                            </div>
+                                                        {% endif %}
+                                                    </div>
+                                                    <div class="col-md-8">
+                                                        <div class="card-body">
+                                                            <h4 class="card-title">
+                                                                <a href="{% url 'rango:show_page' category_name_slug=page.category.slug page_name_slug=page.slug %}">{{ page.title }}</a>
+                                                            </h4>
+                                                            <p class="card-text"><strong>Restaurant
+                                                                Category:</strong> {{ page.category }}</p>
+                                                            <p class="card-text"><strong>Price per
+                                                                person:</strong> {{ page.price }}</p>
+                                                            <p class="card-text">
+                                                                <strong>Rating:</strong> {{ page.rating|default:"No ratings yet" }}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <strong>There are no restaurants present.</strong>
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- 新增餐厅展示区域 -->
-	<div class="row mt-4">
-		<div class="col-md-12">
-			<div class="card mb-4">
-				<div class="card-body">
-					<h2>All Restaurants</h2>
-					<div class="scrollable-list" style="height: 300px; overflow-y: auto;"> <!-- 固定高度并添加滚动条 -->
-						<div class="row">
-							{% if all_pages %}
-								{% for page in all_pages %}
-									<div class="col-md-12 mb-3"> <!-- 每行显示 1 个餐厅 -->
-										<div class="card">
-											<div class="row no-gutters"> <!-- 使用行布局 -->
-												<!-- 餐厅图片 -->
-												<div class="col-md-3">
-													{% if page.image %}
-														<img src="{{ page.image.url }}" alt="{{ page.title }}" class="card-img">
-													{% else %}
-														<div class="card-img bg-light text-center py-5 h-100">
-															<p class="text-muted">No image available</p>
-														</div>
-													{% endif %}
-												</div>
-												<!-- 餐厅名称和链接 -->
-												<div class="col-md-9">
-													<div class="card-body">
-														<h4 class="card-title">
-															<a href="{% url 'rango:show_page' category_name_slug=page.category.slug page_name_slug=page.slug %}">{{ page.title }}</a>
-														</h4>
-			
-														<p class="card-text"><strong>Restaurant Category:</strong> {{ page.category }}</p>
-														<p class="card-text"><strong>Price per person:</strong> {{ page.price }}</p>
-														<p class="card-text"><strong>Rating:</strong> {{ page.rating|default:"No ratings yet" }}</p>
-				
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-								{% endfor %}
-							{% else %}
-								<strong>There are no restaurants present.</strong>
-							{% endif %}
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</div>
 {% endblock %}

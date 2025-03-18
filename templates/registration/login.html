@@ -1,35 +1,45 @@
-{% extends 'rango/base.html' %}
-{% block title_block %}
-	Login
-{% endblock %}
+{% extends "registration/base_auth.html" %}
+
 {% block body_block %}
-<div class="jumbotron p-4">
-	<div class="container">
-		<h1 class="jumbotron-heading">Grab</h1>
-	<div>
-			<h2 class="h2">
-			{% if user.is_authenticated %}
-				Howdy {{ user.username }}, Welcome to Grab!
-			{% else %}
-				Hey there partner! Register to leave your comments in Grab!
-			{% endif %}
-			</h2>
-		<strong>{{ boldmessage }}</strong>
-		</div>
-	</div>
-</div>
-<div class="container">
-<h1>Login</h1>
-<form class="form-signin" role="form" method="post" action=".">
-		{% csrf_token %}
-		<label for="inputUsername" class="sr-only">Username</label>
-		<input type="text" name="username" id="id_username" class="form-control"
-			placeholder="Username" required autofocus>
-		<label for="inputPassword" class="sr-only">Password</label>
-		<input type="password" name="password" id="id_password" class="form-control"
-			placeholder="Password" required>
-		<button class="btn btn-lg btn-primary btn-block" type="submit"
-			value="Submit">Sign in</button>
-</form>
+<div class="row justify-content-center">
+    <div class="col-md-6 px-4">
+        <div class="card mt-5">
+            <div class="card-body">
+                <h2 class="card-title text-center">Login</h2>
+                <form method="post" class="form">
+                    {% csrf_token %}
+                    <!-- 显示 Django messages 框架的错误信息 -->
+                    {% if messages %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for message in messages %}
+                                {{ message }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <!-- 显示表单的非字段错误 -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger" role="alert">
+                            {% for error in form.non_field_errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="username">Email</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        {{ form.password }}
+
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Login</button>
+                    <p class="text-center">Don't have an account? <a href="{% url 'rango:register' %}">Register</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

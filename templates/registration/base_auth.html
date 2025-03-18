@@ -52,7 +52,7 @@
             {% endif %}
         </ul>
      <form class="form-inline my-2 my-lg-0" action="{% url 'rango:index' %}" method="get">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search A Restaurant" aria-label="Search" name="query">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
         <ul class="navbar-nav ml-auto">
@@ -81,24 +81,8 @@
 
 <div class="container-fluid">
     <div class="row">
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
-            <div class="sidebar-sticky">
-                <ul class="nav flex-column">
-                    {% block sidebar_block %}
-                        {% for category in categories %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'rango:show_category' category.slug %}">
-                                    <i class="fas fa-folder"></i> {{ category.name }}
-                                </a>
-                            </li>
-                        {% endfor %}
-                    {% endblock %}
-                </ul>
-            </div>
-        </nav>
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="padding: 30px">
-
+        <main role="main" class="col-md-12  px-4" style="padding: 30px">
             {% block body_block %}{% endblock %}
 
             <!-- FOOTER -->

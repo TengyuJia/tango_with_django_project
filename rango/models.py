@@ -122,3 +122,18 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - {self.stars} stars"
+
+class ContactUs(models.Model):
+    full_name = models.CharField(max_length=255)
+    email = models.EmailField()
+    subject = models.CharField(max_length=255, choices=[
+        ('inquiry', 'General Inquiry'),
+        ('feedback', 'Feedback'),
+        ('complaint', 'Complaint'),
+        ('other', 'Other'),
+    ])
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.full_name} - {self.subject}"
