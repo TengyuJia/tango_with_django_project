@@ -1,0 +1,47 @@
+{% extends "rango/base.html" %}
+
+{% block title %}Add a Restaurant{% endblock %}
+
+{% block body_block %}
+<div class="jumbotron jumbotron-fluid p-4">
+    <div class="container">
+        <h1 class="display-4">Grab</h1>
+        <p class="lead">
+            {% if user.is_authenticated %}
+                Hi {{ user.username }}, Add a new restaurant to {{ category.name }} here!
+            {% else %}
+                Hey there partner! Register to leave your comments in Grab!
+            {% endif %}
+        </p>
+        <strong>{{ boldmessage }}</strong>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-8 offset-md-2">
+            <div class="card mt-4">
+                <div class="card-body">
+                    <h2 class="card-title text-center">Add a Restaurant</h2>
+                    <form role="form" id="page_form" method="post" enctype="multipart/form-data" action="{% url 'rango:add_page' category.slug %}">
+                        {% csrf_token %}
+                        {% for hidden in form.hidden_fields %}
+                            {{ hidden }}
+                        {% endfor %}
+                        {% for field in form.visible_fields %}
+                            <div class="form-group">
+                                {{ field.errors }}
+                                {{ field.help_text }}
+                                {{ field }}
+                            </div>
+                        {% endfor %}
+                        <div class="text-center">
+                            <button class="btn btn-primary" type="submit" name="submit">Add Restaurant</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

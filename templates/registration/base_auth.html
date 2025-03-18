@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+{% load static %}
+{% load rango_template_tags %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v3.8.5">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}">
+    <link href="{% static 'css/all.min.css' %}" rel="stylesheet">
+    <title>
+        Grab - {% block title_block %}How to Tango with Django!{% endblock %}
+    </title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="{% static 'css/custom.css' %}" rel="stylesheet">
+
+</head>
+
+{% block css %}
+{% endblock %}
+
+<body>
+
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="{% url 'rango:index' %}">
+        <img src="{% static 'images/favicon.ico' %}" alt="Logo" height="30" class="d-inline-block align-top">
+        Grab
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+            aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item {% if request.resolver_match.url_name == 'index' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'rango:index' %}">Home <span class="sr-only">(current)</span></a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item {% if request.resolver_match.url_name == 'add_category' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:add_category' %}">Add Category</a>
+                </li>
+                <li class="nav-item {% if request.resolver_match.url_name == 'about' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:about' %}">About</a>
+                </li>
+                 <li class="nav-item {% if request.resolver_match.url_name == 'contact' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:contact' %}">Contact US</a>
+                </li>
+            {% endif %}
+        </ul>
+     <form class="form-inline my-2 my-lg-0" action="{% url 'rango:index' %}" method="get">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="query">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+        <ul class="navbar-nav ml-auto">
+            {% if user.is_authenticated %}
+                <li class="nav-item {% if request.resolver_match.url_name == 'logout' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:logout' %}">Logout</a>
+                </li>
+                <li class="nav-item {% if request.resolver_match.url_name == 'change_password' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:change_password' %}">Change Password</a>
+                </li>
+                  <li class="nav-item {% if request.resolver_match.url_name == 'edit_profile' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:edit_profile' %}">Edit profile</a>
+                </li>
+            {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'rango:register' %}">Register Here</a>
+                </li>
+                <li class="nav-item {% if request.resolver_match.url_name == 'login' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'rango:login' %}">Login</a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>
+
+
+<div class="container-fluid">
+    <div class="row">
+
+        <main role="main" class="col-md-12  px-4" style="padding: 30px">
+            {% block body_block %}{% endblock %}
+
+            <!-- FOOTER -->
+            <footer>
+                <p class="float-right"><a href="#">Back to top</a></p>
+
+            </footer>
+        </main>
+    </div>
+</div>
+
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="{% static "js/jquery-3.3.1.min.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "js/rango-jquery.js" %}" crossorigin="anonymous"></script>
+<script src="{% static "js/rango-ajax.js" %}" crossorigin="anonymous"></script>
+<script>
+    // 获取所有导航链接
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    // 为每个链接添加点击事件
+    navLinks.forEach(link => {
+        link.addEventListener('click', function () {
+            // 移除所有链接的 active 类
+            navLinks.forEach(link => link.classList.remove('active'));
+            // 为当前点击的链接添加 active 类
+            this.classList.add('active');
+        });
+    });
+</script>
+</body>
+</html>

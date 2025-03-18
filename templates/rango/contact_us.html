@@ -1,0 +1,75 @@
+{% extends 'rango/base.html' %}
+{% load static %}
+    {% block css %}
+        <style>
+.contact-us-container {
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        .contact-us-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .contact-us-form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        </style>
+
+    {% endblock %}
+{% block title_block %}
+    About Grab
+{% endblock %}
+
+{% block body_block %}
+<!-- 页面标题 -->
+<div class="jumbotron p-4">
+    <div class="container">
+        <h1 class="jumbotron-heading">About Grab</h1>
+        <p class="lead">Discover the features that make Grab the ultimate platform for food lovers!</p>
+    </div>
+</div>
+
+<!-- 功能介绍 -->
+
+<div class="container contact-us-container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 card">
+            <div class="contact-us-header">
+                <h1 class="text-center">Contact Us</h1>
+                <p class="text-center">We want to hear from you</p>
+            </div>
+            <form class="contact-us-form"  method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="full_name">Full Name</label>
+                    <input type="text" class="form-control" id="full_name" name="full_name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="subject">Subject</label>
+                    <select class="form-control" id="subject" name="subject">
+                        <option value="inquiry">General Inquiry</option>
+                        <option value="feedback">Feedback</option>
+                        <option value="complaint">Complaint</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">Send</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

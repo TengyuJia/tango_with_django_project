@@ -1,0 +1,112 @@
+{% extends 'rango/base.html' %}
+
+
+{% block title_block %}
+    {% if category %}
+        {{ category.name }}
+    {% else %}
+        Unknown category
+    {% endif %}
+{% endblock %}
+
+{% block body_block %}
+<div class="jumbotron jumbotron-fluid p-4">
+    <div class="container">
+        <h1 class="display-4">Grab</h1>
+        <p class="lead">
+            {% if user.is_authenticated %}
+                Hey {{ user.username }}, You are viewing {{ category.name }} Category!
+            {% else %}
+                Hey there partner! Register to leave your comments in Grab!
+            {% endif %}
+        </p>
+    </div>
+</div>
+
+<div class="container">
+    {% if category %}
+    <div class="row">
+        <div class="col-md-12">
+            <h1 class="mb-4">{{ category.name }}</h1>
+            <div class="mb-4">
+                <strong id="like_count">{{ category.likes }}</strong> likes
+                {% if user.is_authenticated %}
+                    {% if not user_liked %}
+                        <button id="like_btn" data-categoryid="{{ category.id }}" class="btn btn-primary btn-sm" type="button">
+                            <span data-feather="thumbs-up"></span> Like Category
+                        </button>
+                    {% else %}
+                        <p class="text-muted">You have already liked this category.</p>
+                    {% endif %}
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            {% if pages %}
+            <ul class="list-group">
+                {% for page in pages %}
+                <li class="list-group-item">
+                    <a href="{% url 'rango:goto' %}?page_id={{ page.id }}">{{ page.title }}</a>
+                    {% if page.views > 1 %}
+                    ({{ page.views }} views)
+                    {% elif page.views == 1 %}
+                    ({{ page.views }} view)
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+            {% else %}
+            <p class="text-muted"><strong>No pages currently in category.</strong></p>
+            {% endif %}
+        </div>
+    </div>
+
+    {% if user.is_authenticated %}
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <form class="form-inline" id="user-form" method="post" action="{% url 'rango:show_category' category.slug %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <input class="form-control mr-2" type="text" size="50" name="query" id="query" value="{{ query }}"/>
+                </div>
+                <button class="btn btn-primary" type="submit" name="submit">Search</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            {% if result_list %}
+            <h2>Results</h2>
+            <div class="list-group">
+                {% for result in result_list %}
+                <div class="list-group-item">
+                    <h3 class="list-group-item-heading">
+                        <a href="{{ result.link }}" target="_blank">
+                            {{ result.title|safe|escape }}
+                        </a>
+                    </h3>
+                    <p class="list-group-item-text">
+                        {{ result.summary|safe|escape }}
+                    </p>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12">
+            <a href="{% url 'rango:add_page' category.slug %}" class="btn btn-success">Add a Restaurant</a>
+        </div>
+    </div>
+    {% endif %}
+    {% else %}
+    <p class="text-muted"><strong>The specified category does not exist.</strong></p>
+    {% endif %}
+</div>
+{% endblock %}

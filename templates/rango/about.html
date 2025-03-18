@@ -1,0 +1,123 @@
+{% extends 'rango/base.html' %}
+{% load static %}
+    {% block css %}
+        <style>
+
+
+.card {
+    border-radius: 0.5rem;
+}
+    .card:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+    transform: translateY(-5px) scale(1.05);
+    background-color: #f8f9fa;
+    border-color: #007bff;
+    transition: all 0.3s ease;
+}
+
+.card-body {
+    padding: 1rem;
+}
+
+
+        </style>
+
+    {% endblock %}
+{% block title_block %}
+    About Grab
+{% endblock %}
+
+{% block body_block %}
+<!-- 页面标题 -->
+<div class="jumbotron p-4">
+    <div class="container">
+        <h1 class="jumbotron-heading">About Grab</h1>
+        <p class="lead">Discover the features that make Grab the ultimate platform for food lovers!</p>
+    </div>
+</div>
+
+<!-- 功能介绍 -->
+<div class="container">
+    <div class="row">
+        <!-- 功能 1：餐厅搜索 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Restaurant Search</h5>
+                    <p class="card-text">
+                        Easily find your favorite restaurants by category, location, or name. 
+                        Explore detailed information, including menus, prices, and reviews.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 2：推荐菜 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Recommended Dishes</h5>
+                    <p class="card-text">
+                        Discover the most popular dishes at each restaurant. 
+                        See what other users recommend and share your own favorites!
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 3：用户评论 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">User Reviews</h5>
+                    <p class="card-text">
+                        Read and write reviews for restaurants. 
+                        Share your dining experiences and help others make informed choices.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- 功能 4：评分系统 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Rating System</h5>
+                    <p class="card-text">
+                        Rate restaurants based on your experience. 
+                        See average ratings and contribute to the community's knowledge.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 5：个性化推荐 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Hot Choice Recommendations</h5>
+                    <p class="card-text">
+                        Get restaurant recommendations based on their popularities.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 功能 6：社交互动 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Social Interaction</h5>
+                    <p class="card-text">
+                        Connect with other food lovers. 
+                        Share your favorite restaurants and dishes, and discover new places together.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
