@@ -1,27 +1,18 @@
 import json
 import requests
+import os
 
-# 读取 SerpAPI Key
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
+
 def read_serpapi_key():
-    """
-    读取 SerpAPI API key，文件命名为 'serpapi.key'
-    返回 API Key 字符串
-    """
-    serpapi_key = None
-    try:
-        with open('serpapi.key', 'r') as f:
-            serpapi_key = f.readline().strip()
-    except:
-        try:
-            with open('../serpapi.key') as f:
-                serpapi_key = f.readline().strip()
-        except:
-            raise IOError('serpapi.key 文件未找到')
+    key_path = os.path.join(BASE_DIR, "serpapi.key") 
+    if not os.path.exists(key_path):
+        raise OSError(f"SerpAPI key file not found: {key_path}")
+    
+    with open(key_path, "r") as key_file:
+        return key_file.read().strip()
 
-    if not serpapi_key:
-        raise KeyError('SerpAPI Key 未找到')
 
-    return serpapi_key
 
 
 # 运行搜索查询
