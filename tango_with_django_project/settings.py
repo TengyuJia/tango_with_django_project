@@ -26,7 +26,7 @@ SECRET_KEY = '-f+oh49m0963&v22ru^3$ex#u40m&_lr!eb(mtx#7snj!*l0j4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['grabtoeat.pythonanywhere.com']
 
 
 # Application definition
