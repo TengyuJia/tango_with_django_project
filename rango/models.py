@@ -111,7 +111,7 @@ class Price(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)  # Timestamp of the price submission
 
     def __str__(self):
-        return f"{self.user.username} - {self.price}"  e
+        return f"{self.user.username} - {self.price}" 
 
 # Define the Rating model
 class Rating(models.Model):
