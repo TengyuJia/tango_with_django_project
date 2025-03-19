@@ -2,8 +2,10 @@ import json
 import requests
 import os
 
+# Define the base directory path
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  
 
+# Function to read the SerpAPI key from a file
 def read_serpapi_key():
     key_path = os.path.join(BASE_DIR, "serpapi.key") 
     if not os.path.exists(key_path):
@@ -12,32 +14,29 @@ def read_serpapi_key():
     with open(key_path, "r") as key_file:
         return key_file.read().strip()
 
-
-
-
-# 运行搜索查询
+# Function to run a search query using SerpAPI
 def run_query(search_terms):
     """
-    使用 SerpAPI 进行 Google 搜索
-    参考文档：https://serpapi.com/
+    Perform a Google search using SerpAPI.
+    Documentation: https://serpapi.com/
     """
     serpapi_key = read_serpapi_key()
     search_url = 'https://serpapi.com/search'
 
-    # 设置请求参数
+    # Set request parameters
     params = {
-        'q': search_terms,        # 搜索关键词
+        'q': search_terms,        # Search query
         'api_key': serpapi_key,   # API Key
-        'engine': 'google',       # 指定搜索引擎
-        'num': 10                 # 返回 10 个搜索结果
+        'engine': 'google',       # Search engine
+        'num': 10                 # Number of results to return
     }
 
-    # 发送请求
+    # Send GET request to SerpAPI
     response = requests.get(search_url, params=params)
     response.raise_for_status()
     search_results = response.json()
 
-    # 解析返回的 JSON 数据
+    # Parse and extract relevant information from the JSON response
     results = []
     if 'organic_results' in search_results:
         for result in search_results['organic_results']:
@@ -49,12 +48,11 @@ def run_query(search_terms):
     
     return results
 
-
-# 测试搜索功能
+# Test the search functionality
 if __name__ == "__main__":
-    query = "树莓派"
+    query = "cake"
     search_results = run_query(query)
 
-    # 打印前 5 个搜索结果
+    # Print the top 5 search results
     for i, result in enumerate(search_results[:5]):
         print(f"{i+1}. {result['title']}\n   {result['link']}\n   {result['summary']}\n")

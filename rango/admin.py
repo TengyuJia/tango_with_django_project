@@ -1,6 +1,6 @@
 from django.contrib import admin
 from rango.models import Category, Page, UserProfile,RecommendedDish
-# Register your models here.
+
 class CategoryAdmin(admin.ModelAdmin):
     prepopulated_fields = {'slug':('name',)}
 class PageAdmin(admin.ModelAdmin):

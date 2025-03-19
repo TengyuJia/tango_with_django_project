@@ -27,7 +27,7 @@
 
 <div class="container">
     {% if page %}
-        <!-- 餐厅信息展示部分 -->
+        <!-- restaurant basic information display -->
         <div class="card mb-4">
             <div class="card-body">
                 <div class="row">
@@ -69,7 +69,7 @@
             </div>
         </div>
 
-        <!-- 推荐菜部分 -->
+        <!-- dish display -->
         <div class="row">
             <div class="col-md-12 d-flex flex-column">
                 <div class="card mb-4 h-100">
@@ -94,7 +94,7 @@
             </div>
         </div>
 
-        <!-- 价格、评分、推荐菜表单部分 -->
+        <!-- price rates recommend dishes input part -->
         <div class="row">
             {% if user.is_authenticated %}
                 <div class="col-md-4 d-flex flex-column">
@@ -148,7 +148,7 @@
             {% endif %}
         </div>
 
-        <!-- 评论部分 -->
+        <!-- comments part -->
         <div class="row">
             <div class="col-md-8 d-flex flex-column">
                 <div class="card mb-4 h-100">
@@ -198,6 +198,6 @@
             The specified restaurant does not exist!
         </div>
     {% endif %}
-</div> <!-- 结束 container -->
+</div> 
 
 {% endblock %}
